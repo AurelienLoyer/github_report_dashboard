@@ -11,26 +11,25 @@
         </label>
       </div>
       <div class="filter">
-        Commits Doublon
+        Hide Duplicate
         <label class="switch">
           <input type="checkbox" v-model="doublon">
           <div class="slider round"></div>
         </label>
       </div>
-      <br>
-    </div>
-
-    <div class="dates">
-      <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
-      <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
+      <div class="filter dates">
+        From <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
+        To <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
+      </div>
     </div>
 
     <v-commit :branch="'master'" :commits="filteredCommits['master']"></v-commit>
 
     <v-commit v-for="(datas, branch) in filteredCommits" v-if="branch !== 'master'" :branch="branch" :commits="datas"></v-commit>
 
-    <div class="black_back" :class="{ 'active': settings }"></div>
+    <div class="black_back" title="close" :class="{ 'active': settings }" @click="closeMail()"></div>
     <div class="bloc_settings" :class="{ 'active': settings }">
+      <i class="close fa fa-times-circle" aria-hidden="true" @click="closeMail()"></i>
       <h2>mail settings</h2>
       <input type="text" placeholder="To" v-model="mail.to" name="to" value="">
       <input type="text" placeholder="CC" v-model="mail.cc" name="cc" value="">
@@ -176,9 +175,11 @@ export default {
     dateChange(){
       this.getCommits()
     },
+    closeMail(){
+      this.settings = false
+    },
     editMail(){
       this.settings = false
-      console.log(this.mail)
       if(this.mail){
         localStorage.setItem('mail',JSON.stringify(this.mail))
       }
@@ -187,7 +188,7 @@ export default {
       if(!this.filtre){
         return true
       }
-      if ( message.match( /(FEATURE - |FIX - |TEST - |REFACTO - )/ ) ) {
+      if ( message.match( /^(FEATURE - |FIX - |TEST - |REFACTO - )/ ) ) {
         return true
       }
       return false
@@ -220,7 +221,7 @@ export default {
           list += '- '+data.commit.message+'\n'
         })
       })
-      
+
       let body = this.mail.body.replace('%today%',today)+list+'  \n'+end
       window.location.href = 'mailto:'+this.mail.to+'?subject='+subject+'&cc='+this.mail.cc+'&body='+encodeURIComponent(body)
     }
@@ -238,7 +239,12 @@ export default {
 
 .page{
 
+  padding-bottom: 100px;
+
   .dates{
+    & > *{
+      margin: 0 10px;
+    }
     .cov-datepicker{
       text-align: center;
     }
@@ -246,7 +252,14 @@ export default {
 
   .filters{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    background: white;
+    box-shadow: 0 0 1px rgba(0,0,0,0.25);
+    max-width: 1000px;
+    width: 90%;
+    margin: 30px auto;
+    
     .filter{
       margin: 20px;
       display: flex;
@@ -266,6 +279,7 @@ export default {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     display: none;
+    cursor: pointer;
     &.active{
       display: block;
     }
@@ -285,6 +299,17 @@ export default {
     transition: all 0.2s;
     &.active{
       display: block;
+    }
+    .close{
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      font-size: 30px;
+      cursor: pointer;
+      transition: all 0.1s;
+      &:hover{
+        color: #B8193A;
+      }
     }
     h2{
       text-transform: uppercase;

@@ -23,10 +23,9 @@ export default {
 <style lang="scss" scoped>
 .loader{
   background: white;
-  text-align: left;
+  text-align: center;
   padding: 10px 30px;
-  box-shadow: 0 0 1px rgba(0,0,0,0.25);
-
+  //box-shadow: 0 0 1px rgba(0,0,0,0.25);
   img{
     height: 250px;
   }

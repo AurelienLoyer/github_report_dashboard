@@ -1,8 +1,8 @@
 <template lang="html">
   <div>
-    <h3>{{branch}}</h3>
-      <ul>
-        <li v-for="data in commits">
+    <h3 class="branch_name">{{branch}}</h3>
+      <ul class="commits">
+        <li v-for="data in commits" class="commit">
           {{data.commit.message}}
         </li>
       </ul>
@@ -19,5 +19,22 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.branch_name{
+  font-size: 1em;
+  text-transform: uppercase;
+}
+.commits{
+  background: white;
+  max-width: 90%;
+  width: 1000px;
+  margin: auto;
+  text-align: left;
+  padding: 10px 0;
+  box-shadow: 0 0 1px rgba(0,0,0,0.25);
+
+  .commit{
+    margin: 10px 20px;
+  }
+}
 </style>
