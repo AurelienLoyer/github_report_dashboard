@@ -1,18 +1,5 @@
 <template lang="html">
   <div class="home">
-    <h2>Welcome</h2>
-
-    <div v-if="me" class="me">
-
-      <img :src="me.avatar_url" alt="">
-      <div class="infos">
-        {{me.login}}<br>
-        <em>{{me.name}}</em><br>
-        <span>Public repo <strong>{{me.public_repos}}</strong></span><br>
-        <span>Private repo <strong>{{me.total_private_repos}}</strong></span>
-      </div>
-
-    </div>
 
     <div v-if="!connected" class="signin">
       <a v-bind:href="connect_url">
@@ -21,7 +8,23 @@
       </a>
     </div>
 
-    <v-quota v-if="meta" :meta="meta"></v-quota>
+    <div v-else class="connected">
+      <h2>Welcome</h2>
+
+      <div v-if="me && 0" class="me">
+        <img :src="me.avatar_url" alt="">
+        <div class="infos">
+          {{me.login}}<br>
+          <em>{{me.name}}</em><br>
+          <span>Public repo <strong>{{me.public_repos}}</strong></span><br>
+          <span>Private repo <strong>{{me.total_private_repos}}</strong></span>
+        </div>
+      </div>
+
+      <v-events :username="me.login"></v-events>
+
+      <v-quota v-if="meta" :meta="meta"></v-quota>
+    </div>
 
   </div>
 </template>
@@ -31,6 +34,7 @@
 import auth from '../auth'
 import env from '../env'
 import Quota from './Quota.vue'
+import Events from './Events.vue'
 
 export default {
   name: 'home',
@@ -40,14 +44,17 @@ export default {
       connected: auth.checkAuth(),
       me: null,
       meta: null,
-      connect_url: '/auth/github',
+      feeds : [],
+      connect_url: '/auth/github'
     }
   },
   components: {
-    'v-quota':Quota
+    'v-quota':Quota,
+    'v-events':Events
   },
   created(){
     this.connect_url = env.api+this.connect_url
+
     if(this.gup('token')){
       localStorage.setItem('token', this.gup('token'))
       this.connected = auth.checkAuth()
@@ -59,6 +66,7 @@ export default {
     if(auth.checkAuth())(
       this.me = JSON.parse(localStorage.getItem('me'))
     )
+
   },
   methods:{
     gup( name )
@@ -102,6 +110,10 @@ export default {
       }
     }
   }
+}
+
+.connected{
+  padding: 2%;
 }
 
 .me{

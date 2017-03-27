@@ -233,3 +233,32 @@ app.get('/me',function(req,res,next){
   })
 
 })
+
+app.get('/events',function(req,res,next){
+
+  let accessToken = req.query.token
+  if(!accessToken){
+    res.set('Content-Type', 'text/html')
+    res.status(401)
+    res.end()
+  }
+
+  github.authenticate({
+    type: "oauth",
+    token: accessToken
+  })
+
+  if(!req.query.username){
+    res.set('Content-Type', 'text/html')
+    res.status(404)
+    res.end()
+    return
+  }
+
+  github.activity.getEventsForUser({
+    username:req.query.username
+  }, function(err, response) {
+    res.json(response);
+  })
+
+})
