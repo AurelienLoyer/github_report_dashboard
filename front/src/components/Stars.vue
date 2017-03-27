@@ -20,9 +20,7 @@
       -----
     </div>
 
-    <div v-if="progress" class="loader">
-      <img src="src/assets/loader3.gif" alt="">
-    </div>
+    <v-loader v-if="progress"></v-loader>
 
     <v-quota v-if="meta" :meta="meta"></v-quota>
 
@@ -34,6 +32,7 @@
 import env from '../env'
 import auth from '../auth'
 import Quota from './Quota.vue'
+import Loader from './Loader.vue'
 
 export default {
   name: 'stars',
@@ -47,6 +46,7 @@ export default {
   },
   components: {
     'v-quota':Quota,
+    'v-loader':Loader,
   },
   created(){
     this.$http.get(env.api+'/stars'+auth.urlToken()).then(response => {
