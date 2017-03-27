@@ -13,7 +13,7 @@
       <div class="filter">
         Commits Doublon
         <label class="switch">
-          <input type="checkbox" v-model="doublon" @change="doublonChange()">
+          <input type="checkbox" v-model="doublon">
           <div class="slider round"></div>
         </label>
       </div>
@@ -24,20 +24,10 @@
       <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
       <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
     </div>
+    
+    <v-commit :branch="'master'" :commits="filteredCommits['master']"></v-commit>
 
-    <template v-for="branch in branches">
-
-      <h3>{{branch.name}}</h3>
-      <ul class="commits">
-        <li v-for="data in branch.commits" v-if="valid_message(data.commit.message) && is_doublon(data.sha)">
-          {{data.commit.message}}
-        </li>
-      </ul>
-      <div v-if="branch.commits && branch.commits.length === 0" class="">
-        -----
-      </div>
-
-    </template>
+    <v-commit v-for="(datas, branch) in filteredCommits" v-if="branch !== 'master'" :branch="branch" :commits="datas"></v-commit>
 
     <div class="black_back" :class="{ 'active': settings }"></div>
     <div class="bloc_settings" :class="{ 'active': settings }">
@@ -74,9 +64,10 @@
 import env from '../env'
 import auth from '../auth'
 import Quota from './Quota.vue'
+import Commit from './Commit.vue'
 import moment from 'moment'
 import Datepicker from 'vue-datepicker'
-
+import {getQueryString} from '../utils';
 
 export default {
   name: 'commits',
@@ -87,7 +78,7 @@ export default {
       doublon: false,
       meta: null,
       repo_params: null,
-      branches: [],
+      commits: [],
       octopus: [],
       settings: false,
       mail:{},
@@ -129,7 +120,8 @@ export default {
   },
   components: {
     'v-quota':Quota,
-    'date-picker': Datepicker
+    'date-picker': Datepicker,
+    'v-commit': Commit
   },
   created(){
 
@@ -143,19 +135,40 @@ export default {
 
     this.getCommits()
   },
+  computed: {
+    filteredCommits(){
+      this.sha = this.commits.filter(commit => commit.branch === 'master').map(data => data.sha)
+      let filtered =  this.commits
+                  .filter(data => this.valid_message(data.commit.message))
+                  .filter(data => data.branch === 'master' || this.is_doublon(data.sha))
+                  .reduce(function(rv, x) {
+                    (rv[x['branch']] = rv[x['branch']] || []).push(x);
+                    return rv;
+                  }, {})
+      
+      return filtered;
+    }
+  },
   methods:{
     getCommits(){
       this.sha = []
+      this.commits = [];
       let time_params = '&since=' + moment(this.startTime.time).toISOString() + '&until=' + moment(this.endTime.time).toISOString()
 
       this.$http.get(env.api+'/branches'+auth.urlToken()+this.repo_params).then(response => {
-        this.branches = response.body.data
         this.meta = response.body.meta
-        this.branches.map(branch => {
-          this.$http.get(env.api+'/commits'+auth.urlToken()+'&branch=' + branch.name + this.repo_params + time_params).then(response => {
+        let promises = response.body.data.map(branch => {
+          return this.$http.get(env.api+'/commits'+auth.urlToken()+'&branch=' + branch.name + this.repo_params + time_params)
+        })
+        Promise.all(promises).then(responses => {
+          responses.forEach(response => {
             this.meta = response.body.meta
-            branch.commits = response.body.data
-            this.$forceUpdate();
+            if(response.body.data){
+              this.commits = this.commits.concat(response.body.data.map(data => {
+                data.branch = getQueryString('branch', response.url);
+                return data;
+              }))
+            }
           })
         })
       })
@@ -180,15 +193,12 @@ export default {
       return false
     },
     is_doublon(sha){
-      console.log(sha)
       if(!this.doublon){
         return true
       }
       if(this.sha.indexOf(sha) > -1){
-        console.log('il existe dans le tableau')
         return false
       }
-      console.log('il extis passsssss')
       this.sha.push(sha)
       return true
     },
