@@ -213,9 +213,14 @@ export default {
       let cc = this.mail.cc
       let end = this.mail.end
       let list = '\n\r'
-      //this.master.map(data => { if(this.valid_message(data.commit.message)) list += '- '+data.commit.message+'\n' })
-      //this.develop.map(data => { if(this.valid_message(data.commit.message)) list += '- '+data.commit.message+'\n' })
-      //this.octopus.map(data => { if(this.valid_message(data.commit.message)) list += '- '+data.commit.message+'\n' })
+
+      let commits = this.filteredCommits;
+      Object.keys(commits).map(branch => {
+        commits[branch].map(data => {
+          list += '- '+data.commit.message+'\n'
+        })
+      })
+      
       let body = this.mail.body.replace('%today%',today)+list+'  \n'+end
       window.location.href = 'mailto:'+this.mail.to+'?subject='+subject+'&cc='+this.mail.cc+'&body='+encodeURIComponent(body)
     }
