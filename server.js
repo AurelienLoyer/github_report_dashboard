@@ -256,7 +256,8 @@ app.get('/events',function(req,res,next){
   }
 
   github.activity.getEventsForUser({
-    username:req.query.username
+    username:req.query.username,
+    per_page: 100
   }, function(err, response) {
     res.json(response);
   })
