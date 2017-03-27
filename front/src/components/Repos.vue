@@ -65,12 +65,6 @@ export default {
 
 <style lang="scss">
 
-  .loader{
-    img{
-      height: 250px;
-    }
-  }
-
   .repos{
     text-align: left;
     width: 1000px;

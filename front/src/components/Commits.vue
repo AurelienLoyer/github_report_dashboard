@@ -24,7 +24,7 @@
       <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
       <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
     </div>
-    
+
     <v-commit :branch="'master'" :commits="filteredCommits['master']"></v-commit>
 
     <v-commit v-for="(datas, branch) in filteredCommits" v-if="branch !== 'master'" :branch="branch" :commits="datas"></v-commit>
@@ -145,7 +145,7 @@ export default {
                     (rv[x['branch']] = rv[x['branch']] || []).push(x);
                     return rv;
                   }, {})
-      
+
       return filtered;
     }
   },
@@ -232,6 +232,12 @@ export default {
 }
 
 .page{
+
+  .dates{
+    .cov-datepicker{
+      text-align: center;
+    }
+  }
 
   .filters{
     display: flex;
