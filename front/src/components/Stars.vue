@@ -4,16 +4,7 @@
 
     <ul class="repos" v-if="!progress">
       <li v-for="repo in repos">
-        <blockquote>
-          <h3>{{repo.name}}</h3>
-          <em>{{repo.description}}</em>
-          <span><i class="fa fa-star" aria-hidden="true"></i> {{repo.stargazers_count}}</span>
-          <span><i class="fa fa-eye" aria-hidden="true"></i> {{repo.watchers_count}}</span>
-          <p class="actions">
-            <router-link :to="'/repos/'+repo.owner.login+'/'+repo.name+'/commits'" class="button">COMMITS</router-link>
-            <router-link :to="'/repos/'+repo.owner.login+'/'+repo.name+'/issues'" class="button white">ISSUES</router-link>
-          </p>
-        </blockquote>
+        <v-repo :repo="repo"></v-repo>
       </li>
     </ul>
     <div v-if="repos.length === 0 && !progress" class="">
@@ -33,6 +24,7 @@ import env from '../env'
 import auth from '../auth'
 import Quota from './Quota.vue'
 import Loader from './Loader.vue'
+import Repo from './item/Repo.vue'
 
 export default {
   name: 'stars',
@@ -47,6 +39,7 @@ export default {
   components: {
     'v-quota':Quota,
     'v-loader':Loader,
+    'v-repo':Repo
   },
   created(){
     this.$http.get(env.api+'/stars'+auth.urlToken()).then(response => {
@@ -75,12 +68,6 @@ export default {
     width: 1000px;
     margin: auto;
     max-width: 100%;
-
-    blockquote{
-      margin: 2em 0;
-      padding-left: 20px;
-      border-left: 4px solid #42b983;
-    }
   }
 
 </style>
