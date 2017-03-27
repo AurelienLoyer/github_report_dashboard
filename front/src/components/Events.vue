@@ -41,7 +41,9 @@ export default {
 .events{
   background: white;
   text-align: left;
-  padding: 15px;
+  padding: 10px 30px;
+  box-shadow: 0 0 1px rgba(0,0,0,0.25);
+
   ul{
     margin: 0;
     padding: 0;
@@ -55,7 +57,8 @@ export default {
     justify-content: flex-start;
     align-items: center;
     padding: 25px 0;
-    border-bottom: 2px solid grey;
+    border-bottom: 2px solid #42B983;
+    overflow: hidden;
 
     .date{
       color: grey;

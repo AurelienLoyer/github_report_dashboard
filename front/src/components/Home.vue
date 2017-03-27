@@ -11,7 +11,7 @@
     <div v-else class="connected">
       <h2>Welcome</h2>
 
-      <div v-if="me && 0" class="me">
+      <div v-if="me" class="me">
         <img :src="me.avatar_url" alt="">
         <div class="infos">
           {{me.login}}<br>
@@ -117,11 +117,24 @@ export default {
 }
 
 .me{
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
+  width: 300px;
+  padding: 10px;
+  box-shadow: 0 0 1px rgba(0,0,0,0.25);
+
+  @media screen and (max-width: 400px) {
+    width: auto;
+  }
+
   img{
     height:100px;
+    width: 100px;
+    border-radius: 50%;
+    border: 3px solid #42b983;
   }
   .infos{
     text-align: left;
