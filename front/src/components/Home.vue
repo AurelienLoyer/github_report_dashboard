@@ -11,14 +11,27 @@
     <div v-else class="connected">
       <h2>Welcome</h2>
 
-      <div v-if="me" class="me">
-        <img :src="me.avatar_url" alt="">
-        <div class="infos">
-          {{me.login}}<br>
-          <em>{{me.name}}</em><br>
-          <span>Public repo <strong>{{me.public_repos}}</strong></span><br>
-          <span>Private repo <strong>{{me.total_private_repos}}</strong></span>
+      <div class="toprow">
+        <div v-if="me" class="me">
+          <img :src="me.avatar_url" alt="">
+          <div class="infos">
+            {{me.login}}<br>
+            <em>{{me.name}}</em><br>
+            <span>Public repo <strong>{{me.public_repos}}</strong></span><br>
+            <span>Private repo <strong>{{me.total_private_repos}}</strong></span>
+          </div>
         </div>
+
+        <v-bulle :color="'#0180C7'" :text="'Public Repo'" :value="me.public_repos"></v-bulle>
+        <v-bulle :color="'#000'" :text="'Private Repo'" :value="me.total_private_repos"></v-bulle>
+
+        <v-bulle :color="'#FF0057'" :text="'Public Gist'" :value="me.public_gists"></v-bulle>
+        <v-bulle :color="'#42B983'" :text="'Private Gist'" :value="me.private_gists"></v-bulle>
+
+        <v-bulle :color="'#bfe624'" :text="'Followers'" :value="me.followers"></v-bulle>
+        <v-bulle :color="'#35495e'" :text="'Following'" :value="me.following"></v-bulle>
+
+        <v-bulle :color="'#d8d0d0'" :text="'Disk Space'" :value="space(me.disk_usage)"></v-bulle>
       </div>
 
       <v-events :username="me.login"></v-events>
@@ -34,7 +47,8 @@
 import auth from '../auth'
 import env from '../env'
 import Quota from './Quota.vue'
-import Events from './Events.vue'
+import Events from './home/Events.vue'
+import Bulle from './home/Bulle.vue'
 
 export default {
   name: 'home',
@@ -50,7 +64,8 @@ export default {
   },
   components: {
     'v-quota':Quota,
-    'v-events':Events
+    'v-events':Events,
+    'v-bulle':Bulle
   },
   created(){
     this.connect_url = env.api+this.connect_url
@@ -66,9 +81,11 @@ export default {
     if(auth.checkAuth())(
       this.me = JSON.parse(localStorage.getItem('me'))
     )
-
   },
   methods:{
+    space(int){
+      return '223'
+    },
     gup( name )
     {
       name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -116,7 +133,15 @@ export default {
   padding: 2%;
 }
 
+.toprow{
+  display: flex;
+  .box{
+    margin-left: 20px;
+  }
+}
+
 .me{
+  height: 120px;
   background: white;
   display: flex;
   justify-content: center;
