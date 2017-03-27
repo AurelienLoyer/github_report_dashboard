@@ -1,7 +1,7 @@
 # Github Report Dashboard
 
 
-## config
+## CONFIG
 
 Create a config.js file with :
 ```config.js
@@ -11,7 +11,7 @@ module.exports = {
 }
 
 ```
-## screens
+## PREVIEW
 
 ![image](https://cloud.githubusercontent.com/assets/3717296/24350718/8d925510-12e3-11e7-9930-c39217bf3971.png)
 
