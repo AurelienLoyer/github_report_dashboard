@@ -1,5 +1,5 @@
 import router from './Router';
-import env from './env';
+import env from 'env';
 
 const auth = {
 

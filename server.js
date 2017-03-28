@@ -1,5 +1,4 @@
-let env = 'dev'
-if(process.argv[2]){env = process.argv[2].replace('--env=','')}
+let env = process.env.NODE_ENV === 'production' ? 'prod' : 'dev'
 const config = require('./config/config.'+env+'.js')
 const port = config.PORT
 const express = require('express')

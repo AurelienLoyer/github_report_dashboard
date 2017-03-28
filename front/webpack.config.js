@@ -70,7 +70,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      'env': path.resolve(__dirname, `src/environment/env${process.env.NODE_ENV === 'production' ? '.prod' : ''}`)
     }
   },
   devServer: {
