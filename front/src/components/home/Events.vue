@@ -4,7 +4,7 @@
     <ul>
       <li v-for="event in events" class="event">
         <span class="date">{{event.created_at | date('YYYY-MM-DD HH:mm')}}</span>
-        <span class="type">{{event.type}} on </span>
+        <span class="type">{{getFormatedType(event.type)}} on </span>
         <span class="repo">{{event.repo.name}}</span>
       </li>
       <li v-if="!progress && events.length == 0" class="no_events">
@@ -44,6 +44,36 @@ export default {
     })
   },
   methods:{
+    getFormatedType(type){
+      switch (type) {
+        case 'PushEvent':
+          return 'Push Event'
+          break;
+        case 'IssuesEvent':
+          return 'Issues Event'
+          break;
+        case 'IssueCommentEvent':
+          return 'Issues Comment Event'
+          break;
+        case 'PullRequestEvent':
+          return 'Pull Request Event'
+          break;
+        case 'WatchEvent':
+          return 'Watch Event'
+          break;
+        case 'MemberEvent':
+          return 'Member Event'
+          break;
+        case 'CreateEvent':
+          return 'Create Event'
+          break;
+        case 'GollumEvent':
+          return 'Gollum Event'
+          break;
+        default:
+          return type
+      }
+    }
   }
 }
 </script>

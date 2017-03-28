@@ -31,7 +31,7 @@
         <v-bulle :color="'#bfe624'" :text="'Followers'" :value="me.followers"></v-bulle>
         <v-bulle :color="'#35495e'" :text="'Following'" :value="me.following"></v-bulle>
 
-        <v-bulle :color="'#d8d0d0'" :text="'Disk Space'" :value="space(me.disk_usage)"></v-bulle>
+        <v-bulle class="disk" :color="'#d8d0d0'" :text="'Disk Space'" :value="space(me.disk_usage)"></v-bulle>
       </div>
 
       <v-events :username="me.login"></v-events>
@@ -84,7 +84,7 @@ export default {
   },
   methods:{
     space(int){
-      return '223'
+      return (int / 1000).toFixed(1)
     },
     gup( name )
     {
@@ -139,6 +139,12 @@ export default {
   flex-wrap: wrap;
   .box{
     margin-left: 20px;
+  }
+  .disk{
+    .bulle{
+      font-size: 20px!important;
+      font-weight: 500;
+    }
   }
 }
 
