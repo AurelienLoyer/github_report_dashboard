@@ -5,10 +5,8 @@
         <li v-for="data in commits" class="commit">
           {{data.commit.message}}
         </li>
+        <li class="no_commit" v-if="!commits || commits.length === 0">No commit</li>
       </ul>
-      <div v-if="commits && commits.length === 0">
-        -----
-      </div>
     </div>
 </template>
 
@@ -35,6 +33,9 @@ export default {
 
   .commit{
     margin: 10px 20px;
+  }
+  .no_commit{
+    text-align: center;
   }
 }
 </style>

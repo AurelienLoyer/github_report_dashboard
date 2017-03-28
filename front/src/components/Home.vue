@@ -135,6 +135,8 @@ export default {
 
 .toprow{
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   .box{
     margin-left: 20px;
   }

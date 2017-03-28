@@ -37,8 +37,9 @@ export default {
 
 <style lang="scss" scoped>
 .me{
+  text-align: center;
+  margin: 20px auto;
   padding-top: 20px;
-
   a{
     cursor: pointer;
   }
