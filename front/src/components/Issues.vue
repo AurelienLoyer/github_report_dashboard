@@ -12,7 +12,7 @@
         <v-issue :issue="issue"></v-issue>
       </li>
       <li v-if="issues.length === 0 && !progress" class="no_issue">
-        -----
+        No issue
       </li>
     </ul>
 
@@ -51,7 +51,7 @@ export default {
   created(){
 
     let repo_params = ''
-    if(this.$route.params.name ){
+    if(this.$route.params.name){
       this.repo.name = this.$route.params.name
       this.repo.owner = this.$route.params.owner
       repo_params = '&repo='+this.repo.name+'&owner='+this.repo.owner
@@ -73,17 +73,18 @@ export default {
 
 <style lang="scss">
 
-  .loader{
-    img{
-      height: 250px;
-    }
-  }
-
   .issues{
     text-align: left;
     width: 1000px;
     margin: auto;
     max-width: 100%;
+
+    .no_issue{
+      background: white;
+      padding: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
 
     blockquote{
       margin: 2em 0;
