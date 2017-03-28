@@ -1,17 +1,18 @@
-const port = 1337;
-const config = require('./config.js');
-const express = require('express');
-const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-const GitHubApi = require("github");
-const oauth = require("oauth").OAuth2;
-const OAuth2 = new oauth(config.GITHUB_CLIENT_ID, config.GITHUB_CLIENT_SECRET, "https://github.com/", "login/oauth/authorize", "login/oauth/access_token");
-
-let accessToken
+let env = 'dev'
+if(process.argv[2]){env = process.argv[2].replace('--env=','')}
+const config = require('./config/config.'+env+'.js')
+const port = config.PORT
+const express = require('express')
+const app = express()
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
+const GitHubApi = require("github")
+const oauth = require("oauth").OAuth2
+const OAuth2 = new oauth(config.GITHUB_CLIENT_ID, config.GITHUB_CLIENT_SECRET, "https://github.com/", "login/oauth/authorize", "login/oauth/access_token")
+const base_uri = config.BASE_URI
 
 server.listen(port);
-console.log('Server listen on port : '+port);
+console.log('Server Run / Mode '+env+' / Port '+port);
 
 let github = new GitHubApi({
   // optional
@@ -36,8 +37,6 @@ app.all('*', function(req, res, next) {
 });
 
 app.get('/auth/github',function(req,res){
-  let base_uri = 'http://localhost:1337'
-  console.log(req)
   res.writeHead(303, {
     Location: OAuth2.getAuthorizeUrl({
       redirect_uri: base_uri+'/auth/github/callback',
