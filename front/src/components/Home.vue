@@ -45,7 +45,7 @@
 <script>
 
 import auth from '../auth'
-import env from '../env'
+import env from 'env'
 import Quota from './Quota.vue'
 import Events from './home/Events.vue'
 import Bulle from './home/Bulle.vue'

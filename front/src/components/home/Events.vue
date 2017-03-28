@@ -19,7 +19,7 @@
 <script>
 
 import auth from '../../auth'
-import env from '../../env'
+import env from 'env'
 import Loader from '../Loader.vue'
 
 export default {

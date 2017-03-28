@@ -11,7 +11,7 @@ import 'font-awesome/css/font-awesome.css';
 //require("font-awesome-sass-loader");
 
 import auth from './auth'
-import env from './env'
+import env from 'env'
 import Header from './components/Header.vue'
 
 export default {

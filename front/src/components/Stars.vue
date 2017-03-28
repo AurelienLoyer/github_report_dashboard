@@ -20,7 +20,7 @@
 
 <script>
 
-import env from '../env'
+import env from 'env'
 import auth from '../auth'
 import Quota from './Quota.vue'
 import Loader from './Loader.vue'
