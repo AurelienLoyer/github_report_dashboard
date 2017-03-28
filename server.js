@@ -184,7 +184,9 @@ app.get('/repos',function(req,res,next){
   })
 
   github.repos.getAll({
-    affiliation:'owner'
+    affiliation:'owner',
+    sort: 'pushed',
+    direction: 'desc'
   }, function(err, response) {
     res.json(response);
   });
