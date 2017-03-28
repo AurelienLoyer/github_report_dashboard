@@ -3,7 +3,7 @@
     <h3>Activities</h3>
     <ul>
       <li v-for="event in events" class="event">
-        <span class="date">{{event.created_at}}</span>
+        <span class="date">{{event.created_at | date('YYYY-MM-DD HH:mm')}}</span>
         <span class="type">{{event.type}} on </span>
         <span class="repo">{{event.repo.name}}</span>
       </li>
