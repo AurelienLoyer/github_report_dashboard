@@ -9,21 +9,14 @@
 
     <ul class="issues" v-if="!progress">
       <li v-for="issue in issues">
-        <blockquote>
-          <h3 v-if="issue.repository">{{issue.repository.name}}</h3>
-          <h4>{{issue.title}}</h4>
-          <em>{{issue.body}}</em>
-        </blockquote>
+        <v-issue :issue="issue"></v-issue>
+      </li>
+      <li v-if="issues.length === 0 && !progress" class="no_issue">
+        -----
       </li>
     </ul>
 
-    <div v-if="issues.length === 0 && !progress" class="">
-      -----
-    </div>
-
-    <div v-if="progress" class="loader">
-      <img src="src/assets/loader3.gif" alt="">
-    </div>
+    <v-loader v-if="progress"></v-loader>
 
     <v-quota v-if="meta" :meta="meta"></v-quota>
 
@@ -36,6 +29,8 @@
 import env from 'env'
 import auth from '../auth'
 import Quota from './Quota.vue'
+import Loader from './Loader.vue'
+import Issue from './item/Issue.vue'
 
 export default {
   name: 'repos',
@@ -50,6 +45,8 @@ export default {
   },
   components: {
     'v-quota':Quota,
+    'v-loader':Loader,
+    'v-issue':Issue,
   },
   created(){
 
