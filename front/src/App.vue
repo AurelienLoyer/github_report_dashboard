@@ -7,8 +7,8 @@
 
 <script>
 
-import 'font-awesome/css/font-awesome.css';
-//require("font-awesome-sass-loader");
+import 'font-awesome/css/font-awesome.css'; // http://fontawesome.io/
+import 'flexboxgrid/css/flexboxgrid.min.css'; // http://flexboxgrid.com/
 
 import auth from './auth'
 import env from 'env'

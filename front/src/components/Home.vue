@@ -11,8 +11,9 @@
     <div v-else class="connected">
       <h2>Welcome</h2>
 
-      <div class="toprow">
-        <div v-if="me" class="me">
+      <div class="row between-xs">
+
+        <div v-if="me" class="me col-md-3 col-xs-12">
           <img :src="me.avatar_url" alt="">
           <div class="infos">
             {{me.login}}<br>
@@ -22,19 +23,33 @@
           </div>
         </div>
 
-        <v-bulle :color="'#0180C7'" :text="'Public Repo'" :value="me.public_repos"></v-bulle>
-        <v-bulle :color="'#000'" :text="'Private Repo'" :value="me.total_private_repos"></v-bulle>
-
-        <v-bulle :color="'#FF0057'" :text="'Public Gist'" :value="me.public_gists"></v-bulle>
-        <v-bulle :color="'#42B983'" :text="'Private Gist'" :value="me.private_gists"></v-bulle>
-
-        <v-bulle :color="'#bfe624'" :text="'Followers'" :value="me.followers"></v-bulle>
-        <v-bulle :color="'#35495e'" :text="'Following'" :value="me.following"></v-bulle>
-
-        <v-bulle class="disk" :color="'#d8d0d0'" :text="'Disk Space'" :value="space(me.disk_usage)"></v-bulle>
+        <v-bulle class="col-xs" :color="'#0180C7'" :text="'Public Repo'" :value="me.public_repos"></v-bulle>
+        <v-bulle class="col-xs" :color="'#000'" :text="'Private Repo'" :value="me.total_private_repos"></v-bulle>
+        <!---->
       </div>
 
-      <v-events :username="me.login"></v-events>
+      <div class="row">
+
+      </div>
+
+      <div class="row between-xs">
+
+        <div class="col-md col-md-6 col-xs-12">
+          <v-events :username="me.login"></v-events>
+        </div>
+        <div class="col-md-4 trends">
+          <v-trend :username="me.login" :trend="'all'" :title="'Activities Trends'"></v-trend>
+          <v-trend :username="me.login" :trend="'commit'" :title="'Commits Trends'"></v-trend>
+        </div>
+        <div class="row col-md-2">
+          <v-bulle :color="'#bfe624'" :text="'Followers'" :value="me.followers"></v-bulle>
+          <v-bulle :color="'#35495e'" :text="'Following'" :value="me.following"></v-bulle>
+          <v-bulle :color="'#FF0057'" :text="'Public Gist'" :value="me.public_gists"></v-bulle>
+          <v-bulle :color="'#42B983'" :text="'Private Gist'" :value="me.private_gists"></v-bulle>
+          <v-bulle class="disk" :color="'#d8d0d0'" :text="'Disk Space'" :value="space(me.disk_usage)"></v-bulle>
+        </div>
+
+      </div>
 
       <v-quota v-if="meta" :meta="meta"></v-quota>
     </div>
@@ -46,9 +61,11 @@
 
 import auth from '../auth'
 import env from 'env'
+import moment from 'moment'
 import Quota from './Quota.vue'
 import Events from './home/Events.vue'
 import Bulle from './home/Bulle.vue'
+import Trend from './home/Trend.vue'
 
 export default {
   name: 'home',
@@ -58,14 +75,14 @@ export default {
       connected: auth.checkAuth(),
       me: null,
       meta: null,
-      feeds : [],
       connect_url: '/auth/github'
     }
   },
   components: {
     'v-quota':Quota,
     'v-events':Events,
-    'v-bulle':Bulle
+    'v-bulle':Bulle,
+    'v-trend':Trend
   },
   created(){
     this.connect_url = env.api+this.connect_url
@@ -78,9 +95,8 @@ export default {
         window.location.href = '/'
       })
     }
-    if(auth.checkAuth())(
-      this.me = JSON.parse(localStorage.getItem('me'))
-    )
+    if(auth.checkAuth()) this.me = JSON.parse(localStorage.getItem('me'))
+
   },
   methods:{
     space(int){
@@ -102,6 +118,17 @@ export default {
 </script>
 
 <style lang="scss">
+
+.row{
+  margin: 0;
+  padding: 0;
+}
+
+.trends{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
 .signin{
   width: 200px;
@@ -133,7 +160,7 @@ export default {
   padding: 2%;
 }
 
-.toprow{
+.row{
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
