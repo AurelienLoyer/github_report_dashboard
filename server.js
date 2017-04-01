@@ -15,7 +15,7 @@ console.log('Server Run / Mode '+env+' / Port '+port);
 
 let github = new GitHubApi({
   // optional
-  debug: true,
+  debug: false,
   protocol: 'https',
   host: 'api.github.com', // should be api.github.com for GitHub
   pathPrefix: '', // for some GHEs; none for GitHub
@@ -161,10 +161,14 @@ app.get('/stars',function(req,res,next){
     token: accessToken
   })
 
-  let date = new Date()
-  let since = date.toISOString().split('T')[0]
+  if(!req.query.per_page){
+    req.query.per_page = 100
+  }
 
-  github.activity.getStarredRepos({}, function(err, response) {
+  github.activity.getStarredRepos({
+    per_page: req.query.per_page,
+    sort: 'updated'
+  }, function(err, response) {
     res.json(response);
   });
 
@@ -234,6 +238,23 @@ app.get('/me',function(req,res,next){
 
 })
 
+app.get('/orgs',function(req,res,next){
+
+  let accessToken = req.query.token
+  if(!accessToken){
+    res.set('Content-Type', 'text/html')
+    res.status(401)
+    res.end()
+  }
+  github.authenticate({
+    type: "oauth",
+    token: accessToken
+  })
+  github.users.getOrgs({}, function(err, response) {
+    res.json(response);
+  })
+})
+
 app.get('/events',function(req,res,next){
 
   let accessToken = req.query.token
@@ -255,9 +276,13 @@ app.get('/events',function(req,res,next){
     return
   }
 
+  if(!req.query.per_page){
+    req.query.per_page = 100
+  }
+
   github.activity.getEventsForUser({
     username:req.query.username,
-    per_page: 100
+    per_page: req.query.per_page
   }, function(err, response) {
     res.json(response);
   })
