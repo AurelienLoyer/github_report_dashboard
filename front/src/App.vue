@@ -8,8 +8,7 @@
 <script>
 
 import 'font-awesome/css/font-awesome.css'; // http://fontawesome.io/
-import 'flexboxgrid/css/flexboxgrid.min.css'; // http://flexboxgrid.com/
-
+//require("bootstrap-grid")
 import auth from './auth'
 import env from 'env'
 import Header from './components/Header.vue'
@@ -59,5 +58,9 @@ li {
 
 a {
   color: #42b983;
+}
+
+.clearfix:after, .clearfix:before, .container-fluid:after, .container-fluid:before, .container:after, .container:before, .row:after, .row:before {
+  display: none!important;
 }
 </style>

@@ -24,8 +24,7 @@ export default {
 }
 .commits{
   background: white;
-  max-width: 90%;
-  width: 1000px;
+  width: 100%;
   margin: auto;
   text-align: left;
   padding: 10px 0;

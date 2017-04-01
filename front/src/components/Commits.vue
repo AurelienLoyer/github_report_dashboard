@@ -18,14 +18,24 @@
         </label>
       </div>
       <div class="filter dates">
-        From <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
-        To <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
+        <span>
+          From
+          <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
+        </span>
+        <span>
+          To
+          <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
+        </span>
       </div>
     </div>
 
-    <v-commit :branch="'master'" :commits="filteredCommits['master']"></v-commit>
-
-    <v-commit v-for="(datas, branch) in filteredCommits" v-if="branch !== 'master'" :branch="branch" :commits="datas"></v-commit>
+    <div class="list">
+      <v-commit :branch="'master'" :commits="filteredCommits['master']"></v-commit>
+      <v-commit v-for="(datas, branch) in filteredCommits" v-if="branch !== 'master'" :branch="branch" :commits="datas"></v-commit>
+      <div class="refresh" @click="getCommits()">
+        <i class="fa fa-refresh" aria-hidden="true"></i>
+      </div>
+    </div>
 
     <div class="black_back" title="close" :class="{ 'active': settings }" @click="closeMail()"></div>
     <div class="bloc_settings" :class="{ 'active': settings }">
@@ -50,7 +60,7 @@
 
     <button class="mail" type="button" name="button" @click="sendmail()">
       <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-      MAILER
+      MAIL
     </button>
 
     <v-quota v-if="meta" :meta="meta"></v-quota>
@@ -138,12 +148,12 @@ export default {
     filteredCommits(){
       this.sha = this.commits.filter(commit => commit.branch === 'master').map(data => data.sha)
       let filtered =  this.commits
-                  .filter(data => this.valid_message(data.commit.message))
-                  .filter(data => data.branch === 'master' || this.is_doublon(data.sha))
-                  .reduce(function(rv, x) {
-                    (rv[x['branch']] = rv[x['branch']] || []).push(x);
-                    return rv;
-                  }, {})
+      .filter(data => this.valid_message(data.commit.message))
+      .filter(data => data.branch === 'master' || this.is_doublon(data.sha))
+      .reduce(function(rv, x) {
+        (rv[x['branch']] = rv[x['branch']] || []).push(x);
+        return rv;
+      }, {})
 
       return filtered;
     }
@@ -259,7 +269,7 @@ export default {
     max-width: 1000px;
     width: 90%;
     margin: 30px auto;
-    
+
     .filter{
       margin: 20px;
       display: flex;
@@ -358,6 +368,42 @@ export default {
       }
     }
 
+  }
+
+  .list{
+    width: 1000px;
+    max-width: 90%;
+    margin: auto;
+    position: relative;
+
+    .refresh{
+      color: white;
+      background: #FF0057;
+      padding: 10px;
+      font-size: 20px;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      cursor: pointer;
+      position: fixed;
+      right: 10px;
+      bottom: 20%;
+      .fa{
+        transition: all 0.2s;
+      }
+      &:hover{
+        .fa{
+          transform: rotate(120deg);
+        }
+      }
+
+      @media screen and (max-width: 800px) {
+        position: relative;
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+      }
+    }
   }
 
 }
