@@ -1,6 +1,9 @@
 <template lang="html">
   <div class="box">
-    <div class="bulle" :style="{ 'background': color }">{{value}}</div>
+    <div class="bulle" :style="{ 'background': color }">
+      {{value}}
+      <span class="unit">(mo)</span>
+    </div>
     <span>{{text}}</span>
   </div>
 </template>
@@ -39,7 +42,20 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  &.disk{
+    .bulle{
+      font-size: 20px!important;
+      font-weight: 500;
+      position: relative;
+      .unit{
+        display: block;
+      }
+    }
+  }
   .bulle{
+    .unit{
+      display: none;
+    }
     height: 70px;
     width: 70px;
     text-align: center;

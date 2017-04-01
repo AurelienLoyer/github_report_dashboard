@@ -3,7 +3,7 @@
     <h3>{{title}}</h3>
     <trend
       :data="count"
-      :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
+      :gradient="['#00c6ff', '#F0F', '#FF0']"
       auto-draw
       :auto-draw-duration="3000"
       smooth

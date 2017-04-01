@@ -11,41 +11,30 @@
     <div v-else class="connected">
       <h2>Welcome</h2>
 
-      <div class="row between-xs">
-
-        <div v-if="me" class="me col-md-3 col-xs-12">
-          <img :src="me.avatar_url" alt="">
-          <div class="infos">
-            {{me.login}}<br>
-            <em>{{me.name}}</em><br>
-            <span>Public repo <strong>{{me.public_repos}}</strong></span><br>
-            <span>Private repo <strong>{{me.total_private_repos}}</strong></span>
-          </div>
-        </div>
-
-        <v-bulle class="col-xs" :color="'#0180C7'" :text="'Public Repo'" :value="me.public_repos"></v-bulle>
-        <v-bulle class="col-xs" :color="'#000'" :text="'Private Repo'" :value="me.total_private_repos"></v-bulle>
-        <!---->
+      <div class="top">
+        <v-me></v-me>
+        <v-orgas></v-orgas>
+        <v-bulle :color="'#0180C7'" :text="'Public Repo'" :value="me.public_repos"></v-bulle>
+        <v-bulle :color="'#000'" :text="'Private Repo'" :value="me.total_private_repos"></v-bulle>
       </div>
 
-      <div class="row">
 
-      </div>
 
-      <div class="row between-xs">
+      <div class="middle">
 
-        <div class="col-md col-md-6 col-xs-12">
-          <v-events :username="me.login"></v-events>
-        </div>
-        <div class="col-md-4 trends">
+        <v-events :username="me.login"></v-events>
+
+        <div class="trends">
           <v-trend :username="me.login" :trend="'all'" :title="'Activities Trends'"></v-trend>
           <v-trend :username="me.login" :trend="'commit'" :title="'Commits Trends'"></v-trend>
         </div>
-        <div class="row col-md-2">
-          <v-bulle :color="'#bfe624'" :text="'Followers'" :value="me.followers"></v-bulle>
+
+        <div class="stats">
+          <v-bulle :color="'#0180C7'" :text="'Followers'" :value="me.followers"></v-bulle>
           <v-bulle :color="'#35495e'" :text="'Following'" :value="me.following"></v-bulle>
           <v-bulle :color="'#FF0057'" :text="'Public Gist'" :value="me.public_gists"></v-bulle>
           <v-bulle :color="'#42B983'" :text="'Private Gist'" :value="me.private_gists"></v-bulle>
+          <v-bulle :color="'#bfe624'" :text="'Stars'" :value="stars"></v-bulle>
           <v-bulle class="disk" :color="'#d8d0d0'" :text="'Disk Space'" :value="space(me.disk_usage)"></v-bulle>
         </div>
 
@@ -64,8 +53,11 @@ import env from 'env'
 import moment from 'moment'
 import Quota from './Quota.vue'
 import Events from './home/Events.vue'
+import Organizations from './home/Organizations.vue'
 import Bulle from './home/Bulle.vue'
 import Trend from './home/Trend.vue'
+import Me from './home/Me.vue'
+let parse = require('parse-link-header')
 
 export default {
   name: 'home',
@@ -75,14 +67,17 @@ export default {
       connected: auth.checkAuth(),
       me: null,
       meta: null,
-      connect_url: '/auth/github'
+      connect_url: '/auth/github',
+      stars: 0
     }
   },
   components: {
-    'v-quota':Quota,
-    'v-events':Events,
-    'v-bulle':Bulle,
-    'v-trend':Trend
+    'v-me': Me,
+    'v-quota': Quota,
+    'v-events': Events,
+    'v-bulle': Bulle,
+    'v-trend': Trend,
+    'v-orgas': Organizations
   },
   created(){
     this.connect_url = env.api+this.connect_url
@@ -96,7 +91,7 @@ export default {
       })
     }
     if(auth.checkAuth()) this.me = JSON.parse(localStorage.getItem('me'))
-
+    this.getTotalStars()
   },
   methods:{
     space(int){
@@ -112,6 +107,13 @@ export default {
       return "";
       else
       return results[1];
+    },
+    getTotalStars(){
+      this.$http.get(env.api+'/stars'+auth.urlToken()+'&per_page=1').then(response => {
+        let parsed = parse(response.body.meta.link)
+        this.stars = parsed.last.page
+        this.meta = response.body.meta;
+      })
     }
   }
 }
@@ -124,10 +126,55 @@ export default {
   padding: 0;
 }
 
-.trends{
+.top{
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  flex-wrap: wrap;
+  @media screen and (max-width: 800px) {
+    justify-content: space-around;
+  }
+}
+
+.middle{
+  display: flex;
+  justify-content: space-between;
+  @media screen and (max-width: 1300px) {
+    flex-wrap: wrap;
+  }
+  .events{
+    @media screen and (max-width: 1300px) {
+      width: 45%!important;
+    }
+    @media screen and (max-width: 800px) {
+      width: 100%!important;
+    }
+  }
+  .trends{
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0px 20px;
+    @media screen and (max-width: 1300px) {
+      padding: 0px;
+      width: 45%;
+    }
+    @media screen and (max-width: 800px) {
+      width: 100%!important;
+      margin-top: 20px;
+    }
+  }
+  .stats{
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 280px;
+    max-width: 300px;
+    justify-content: space-between;
+    @media screen and (max-width: 1300px) {
+      min-width: 100%;
+      margin-top: 20px;
+    }
+  }
 }
 
 .signin{
@@ -160,46 +207,5 @@ export default {
   padding: 2%;
 }
 
-.row{
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  .box{
-    margin-left: 20px;
-  }
-  .disk{
-    .bulle{
-      font-size: 20px!important;
-      font-weight: 500;
-    }
-  }
-}
-
-.me{
-  height: 120px;
-  background: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-  width: 300px;
-  padding: 10px;
-  box-shadow: 0 0 1px rgba(0,0,0,0.25);
-
-  @media screen and (max-width: 400px) {
-    width: auto;
-  }
-
-  img{
-    height:100px;
-    width: 100px;
-    border-radius: 50%;
-    border: 3px solid #42b983;
-  }
-  .infos{
-    text-align: left;
-    margin-left: 20px;
-  }
-}
 
 </style>

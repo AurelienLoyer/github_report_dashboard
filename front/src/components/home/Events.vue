@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="events">
-    <h3>Activities</h3>
+    <h3>Activities <em>(last {{events.length}})</em></h3>
     <ul>
       <li v-for="event in events" class="event">
         <span class="date">{{event.created_at | date('YYYY-MM-DD HH:mm')}}</span>
@@ -84,6 +84,13 @@ export default {
   text-align: left;
   padding: 10px 30px;
   box-shadow: 0 0 1px rgba(0,0,0,0.25);
+
+  h3{
+    em{
+      font-size: 12px;
+      margin-left: 8px;
+    }
+  }
 
   ul{
     margin: 0;
