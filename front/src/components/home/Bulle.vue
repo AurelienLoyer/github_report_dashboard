@@ -49,6 +49,11 @@ export default {
       position: relative;
       .unit{
         display: block;
+        position: absolute;
+        bottom: -20px;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
       }
     }
   }

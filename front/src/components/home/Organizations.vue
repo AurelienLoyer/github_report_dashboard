@@ -2,7 +2,7 @@
   <div class="organizations">
     <h3>Organization<span v-if="organizations.length > 1">s</span></h3>
     <ul>
-      <li v-for="orga in organizations" class="organization">
+      <li v-if="!progress" v-for="orga in organizations" class="organization">
         <img :src="orga.avatar_url" alt="">
         <span class="name">{{orga.login}}</span>
       </li>
@@ -47,6 +47,16 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.organizations{
+  .loader{
+    img{
+      height: 65px!important;
+    }
+  }
+}
+</style>
+
 <style lang="scss" scoped>
 
 .organizations{
@@ -57,12 +67,6 @@ export default {
   box-shadow: 0 0 1px rgba(0,0,0,0.25);
 
   h3{margin: 0;}
-
-  .loader{
-    img{
-      height: 50px;
-    }
-  }
 
   .organization{
     img{

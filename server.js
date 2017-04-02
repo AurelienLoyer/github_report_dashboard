@@ -132,7 +132,7 @@ app.get('/issues',function(req,res,next){
     github.issues.getForRepo({
       owner: req.query.owner,
       repo: req.query.repo,
-      per_page: 100
+      per_page: 30
     }, function(err, response) {
       res.json(response);
     });

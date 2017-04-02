@@ -147,7 +147,7 @@ export default {
   computed: {
     filteredCommits(){
       this.sha = this.commits.filter(commit => commit.branch === 'master').map(data => data.sha)
-      let filtered =  this.commits
+      let filtered = this.commits
       .filter(data => this.valid_message(data.commit.message))
       .filter(data => data.branch === 'master' || this.is_doublon(data.sha))
       .reduce(function(rv, x) {
