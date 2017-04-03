@@ -26,12 +26,12 @@
 
     <ul class="issues">
       <li v-for="issue in issues" v-if="filter(issue)">
-        <div class="repo_name" v-if="displayRepoName(issue.repo.name)">
+        <div class="repo_name" v-if="issue.repo">
           {{issue.repo.name}}
           <em>
             ( <strong>{{issue.nbtotal}}</strong>
-            issue<span v-if="issue.nbtotal> 1">s</span> <span v-if="issue.nbtotal >= 30">and maybe more...</span>)
-
+            issue<span v-if="issue.nbtotal> 1">s</span>
+            <span v-if="issue.nbtotal >= 30"> and maybe more...</span>)
           </em>
         </div>
         <v-issue :issue="issue"></v-issue>
@@ -66,9 +66,8 @@ export default {
       token: localStorage.getItem('token'),
       progress: false,
       repo: {},
-      starred: true,
+      starred: false,
       owned: true,
-      current_repo_name: '',
     }
   },
   components: {
@@ -88,6 +87,8 @@ export default {
   },
   methods:{
     filter(issue){
+      if(this.repo.name)
+        return true
       if(this.starred && issue.isStarred)
         return true
       if(this.owned && issue.isOwned)
@@ -102,8 +103,12 @@ export default {
       this.repo.owner = this.$route.params.owner
       repo_params = '&repo='+this.repo.name+'&owner='+this.repo.owner
       this.$http.get(env.api+'/issues'+auth.urlToken()+repo_params).then(response => {
-        if(response.body.data) this.issues = response.body.data
-        console.log(this.issues)
+        if(!response.body.data) return
+        response.body.data.map(issue => {
+          console.log(response.body.data.length)
+          issue.nbtotal = response.body.data.length
+          this.issues.push(issue)
+        })
         this.meta = response.body.meta
         this.progress = false
       })
@@ -116,12 +121,14 @@ export default {
           repo_params = '&repo='+repo.name+'&owner='+repo.owner.login
           this.$http.get(env.api+'/issues'+auth.urlToken()+repo_params).then(response => {
             if(!response.body.data) return
+            let index = 0
             response.body.data.map(issue => {
-              issue.repo = repo
+              if(index === 0) issue.repo = repo
               issue.isStarred = true
               console.log(response.body.data.length)
               issue.nbtotal = response.body.data.length
               this.issues.push(issue)
+              index++
             })
             this.meta = response.body.meta
           })
@@ -136,24 +143,18 @@ export default {
           repo_params = '&repo='+repo.name+'&owner='+repo.owner.login
           this.$http.get(env.api+'/issues'+auth.urlToken()+repo_params).then(response => {
             if(!response.body.data) return
+            let index = 0
             response.body.data.map(issue => {
-              issue.repo = repo
+              if(index === 0) issue.repo = repo
               issue.isOwned = true
               issue.nbtotal = response.body.data.length
               this.issues.push(issue)
+              index++
             })
             this.meta = response.body.meta
           })
         })
       })
-    },
-    displayRepoName(name){
-      if(this.current_repo_name == name){
-        return false
-      }else{
-        this.current_repo_name = name
-        return true
-      }
     }
   }
 
