@@ -2,11 +2,13 @@
   <blockquote>
     <h3 v-if="issue.repository">{{issue.repository.name}}</h3>
     <h4>{{issue.title}}</h4>
-    <em>{{issue.body}}</em>
+    <em v-html="marked(issue.body)"></em>
   </blockquote>
 </template>
 
 <script>
+
+let marked = require('marked');
 
 export default {
   name: 'repo-issue',
@@ -22,11 +24,14 @@ export default {
   created(){
   },
   methods:{
+    marked(string){
+      return marked(string)
+    }
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 blockquote{
   margin: 2em 0;
@@ -41,8 +46,14 @@ blockquote{
     margin-bottom: 10px;
   }
   h4{
-    
+
   }
+
+  img{
+    display: block;
+    max-width: 100%;
+  }
+
 }
 
 </style>
