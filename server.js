@@ -165,10 +165,18 @@ app.get('/stars',function(req,res,next){
     req.query.per_page = 100
   }
 
+  if(!req.query.page){
+    req.query.page = 1
+  }
+
   github.activity.getStarredRepos({
     per_page: req.query.per_page,
-    sort: 'updated'
+    sort: 'updated',
+    page: req.query.page,
+    direction: 'desc'
   }, function(err, response) {
+    if(github.hasNextPage(response))
+      response.next = true
     res.json(response);
   });
 
@@ -187,11 +195,23 @@ app.get('/repos',function(req,res,next){
     token: accessToken
   })
 
+  if(!req.query.per_page){
+    req.query.per_page = 100
+  }
+
+  if(!req.query.page){
+    req.query.page = 1
+  }
+
   github.repos.getAll({
+    per_page: req.query.per_page,
     affiliation:'owner',
-    sort: 'pushed',
+    sort: 'updated',
+    page: req.query.page,
     direction: 'desc'
   }, function(err, response) {
+    if(github.hasNextPage(response))
+      response.next = true
     res.json(response);
   });
 
