@@ -1,5 +1,12 @@
 let env = process.env.NODE_ENV === 'production' ? 'prod' : 'dev'
-const config = require('./config/config.'+env+'.js')
+
+if(process.env.NODE_ENV === "heroku"){
+  env = "heroku";
+  const config = process.env;
+}else{
+  const config = require('./config/config.'+env+'.js')
+}
+
 const port = config.PORT
 const express = require('express')
 const app = express()
