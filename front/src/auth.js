@@ -10,7 +10,7 @@ const auth = {
     localStorage.removeItem('token')
     localStorage.removeItem('me')
     this.authenticated = false
-    router.go('/')
+    router.push('/')
   },
 
   checkAuth() {
