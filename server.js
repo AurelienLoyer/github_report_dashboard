@@ -1,6 +1,8 @@
 let env = process.env.NODE_ENV === 'production' ? 'prod' : 'dev'
 
-if(process.env.NODE_ENV === "heroku"){
+console.log(process.env);
+
+if(process.env.NODE_ENV == "heroku"){
   env = "heroku";
   const config = process.env;
 }else{
