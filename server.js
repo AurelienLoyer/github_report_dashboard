@@ -1,7 +1,7 @@
 let env = process.env.NODE_ENV === 'production' ? 'prod' : 'dev'
 
 console.log(process.env);
-const config = process.env;
+var config = process.env;
 
 if(process.env.NODE_ENV == "heroku"){
   env = "heroku";
