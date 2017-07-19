@@ -1,5 +1,5 @@
 # Github Report Dashboard
-
+[![Heroku](https://heroku-badge.herokuapp.com/?app=heroku-badge)](https://peaceful-temple-15204.herokuapp.com/)
 
 ## CONFIG
 
