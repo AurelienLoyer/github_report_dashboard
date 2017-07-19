@@ -178,12 +178,20 @@ export default {
 }
 
 .signin{
-  width: 200px;
-  max-width: 80%;
+  width: 300px;
   margin: auto;
+  position: absolute;
+  background: white;
+  padding: 20px;
+  left: 50%;
+  margin-left: -170px;
+  top: 25%;
+  border-radius: 10px;
+
   img{
     height:150px;
   }
+  
   a{
     color: black;
 

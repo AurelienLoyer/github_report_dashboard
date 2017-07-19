@@ -69,6 +69,7 @@ export default {
   h3{margin: 0;}
 
   .organization{
+    display: inline-block;
     img{
       height: 50px;
       display: block;
