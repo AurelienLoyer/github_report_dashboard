@@ -30,7 +30,7 @@ export default {
   position: fixed;
   border: none;
   color: white;
-  background: #B8193A;
+  background: #FF0057;
   padding: 15px 20px;
   font-weight: bold;
   font-size: 16px;

@@ -2,4 +2,6 @@
 node_modules/
 npm-debug.log
 yarn-error.log
-config.js
+config/config.prod.js
+config/config.dev.js
+config/config.heroku.js

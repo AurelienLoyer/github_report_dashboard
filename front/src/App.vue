@@ -7,11 +7,10 @@
 
 <script>
 
-import 'font-awesome/css/font-awesome.css';
-//require("font-awesome-sass-loader");
-
+import 'font-awesome/css/font-awesome.css'; // http://fontawesome.io/
+//require("bootstrap-grid")
 import auth from './auth'
-import env from './env'
+import env from 'env'
 import Header from './components/Header.vue'
 
 export default {
@@ -32,6 +31,9 @@ export default {
 </script>
 
 <style lang="scss">
+body{
+  background: #F6F7F7
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -56,5 +58,9 @@ li {
 
 a {
   color: #42b983;
+}
+
+.clearfix:after, .clearfix:before, .container-fluid:after, .container-fluid:before, .container:after, .container:before, .row:after, .row:before {
+  display: none!important;
 }
 </style>

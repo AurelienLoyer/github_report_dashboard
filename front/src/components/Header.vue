@@ -51,7 +51,6 @@ export default {
     if(auth.checkAuth())(
       this.me = JSON.parse(localStorage.getItem('me'))
     )
-    console.log(this.me)
   },
   methods:{
   }

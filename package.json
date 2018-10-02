@@ -2,11 +2,13 @@
   "name": "github_report",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "git subtree push — prefix dist heroku master",
+    "start": "node server.js"
   },
-  "author": "",
+  "author": "Aurélien Loyer",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -14,5 +16,8 @@
     "github": "^9.2.0",
     "oauth": "^0.9.15",
     "socket.io": "^1.7.3"
+  },
+  "engines": {
+    "node": "6.9.2"
   }
 }

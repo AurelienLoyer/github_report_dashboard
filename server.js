@@ -1,21 +1,31 @@
-const port = 1337;
-const config = require('./config.js');
-const express = require('express');
-const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-const GitHubApi = require("github");
-const oauth = require("oauth").OAuth2;
-const OAuth2 = new oauth(config.GITHUB_CLIENT_ID, config.GITHUB_CLIENT_SECRET, "https://github.com/", "login/oauth/authorize", "login/oauth/access_token");
+let env = process.env.NODE_ENV === 'production' ? 'prod' : 'dev'
 
-let accessToken
+console.log(process.env);
+var config = process.env;
+
+if(process.env.NODE_ENV == "heroku"){
+  env = "heroku";
+  config = process.env;
+}else{
+  config = require('./config/config.'+env+'.js')
+}
+
+const port = config.PORT
+const express = require('express')
+const app = express()
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
+const GitHubApi = require("github")
+const oauth = require("oauth").OAuth2
+const OAuth2 = new oauth(config.GITHUB_CLIENT_ID, config.GITHUB_CLIENT_SECRET, "https://github.com/", "login/oauth/authorize", "login/oauth/access_token")
+const base_uri = config.BASE_URI
 
 server.listen(port);
-console.log('Server listen on port : '+port);
+console.log('Server Run / Mode '+env+' / Port '+port);
 
 let github = new GitHubApi({
   // optional
-  debug: true,
+  debug: false,
   protocol: 'https',
   host: 'api.github.com', // should be api.github.com for GitHub
   pathPrefix: '', // for some GHEs; none for GitHub
@@ -36,8 +46,6 @@ app.all('*', function(req, res, next) {
 });
 
 app.get('/auth/github',function(req,res){
-  let base_uri = 'http://localhost:1337'
-  console.log(req)
   res.writeHead(303, {
     Location: OAuth2.getAuthorizeUrl({
       redirect_uri: base_uri+'/auth/github/callback',
@@ -134,7 +142,7 @@ app.get('/issues',function(req,res,next){
     github.issues.getForRepo({
       owner: req.query.owner,
       repo: req.query.repo,
-      per_page: 100
+      per_page: 30
     }, function(err, response) {
       res.json(response);
     });
@@ -163,10 +171,22 @@ app.get('/stars',function(req,res,next){
     token: accessToken
   })
 
-  let date = new Date()
-  let since = date.toISOString().split('T')[0]
+  if(!req.query.per_page){
+    req.query.per_page = 100
+  }
 
-  github.activity.getStarredRepos({}, function(err, response) {
+  if(!req.query.page){
+    req.query.page = 1
+  }
+
+  github.activity.getStarredRepos({
+    per_page: req.query.per_page,
+    sort: 'updated',
+    page: req.query.page,
+    direction: 'desc'
+  }, function(err, response) {
+    if(github.hasNextPage(response))
+      response.next = true
     res.json(response);
   });
 
@@ -185,9 +205,23 @@ app.get('/repos',function(req,res,next){
     token: accessToken
   })
 
+  if(!req.query.per_page){
+    req.query.per_page = 100
+  }
+
+  if(!req.query.page){
+    req.query.page = 1
+  }
+
   github.repos.getAll({
-    affiliation:'owner'
+    per_page: req.query.per_page,
+    affiliation:'owner',
+    sort: 'updated',
+    page: req.query.page,
+    direction: 'desc'
   }, function(err, response) {
+    if(github.hasNextPage(response))
+      response.next = true
     res.json(response);
   });
 
@@ -229,6 +263,57 @@ app.get('/me',function(req,res,next){
     token: accessToken
   })
   github.users.get({}, function(err, response) {
+    res.json(response);
+  })
+
+})
+
+app.get('/orgs',function(req,res,next){
+
+  let accessToken = req.query.token
+  if(!accessToken){
+    res.set('Content-Type', 'text/html')
+    res.status(401)
+    res.end()
+  }
+  github.authenticate({
+    type: "oauth",
+    token: accessToken
+  })
+  github.users.getOrgs({}, function(err, response) {
+    res.json(response);
+  })
+})
+
+app.get('/events',function(req,res,next){
+
+  let accessToken = req.query.token
+  if(!accessToken){
+    res.set('Content-Type', 'text/html')
+    res.status(401)
+    res.end()
+  }
+
+  github.authenticate({
+    type: "oauth",
+    token: accessToken
+  })
+
+  if(!req.query.username){
+    res.set('Content-Type', 'text/html')
+    res.status(404)
+    res.end()
+    return
+  }
+
+  if(!req.query.per_page){
+    req.query.per_page = 100
+  }
+
+  github.activity.getEventsForUser({
+    username:req.query.username,
+    per_page: req.query.per_page
+  }, function(err, response) {
     res.json(response);
   })
 

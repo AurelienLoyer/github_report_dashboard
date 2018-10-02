@@ -11,26 +11,35 @@
         </label>
       </div>
       <div class="filter">
-        Commits Doublon
+        Hide Duplicate
         <label class="switch">
           <input type="checkbox" v-model="doublon">
           <div class="slider round"></div>
         </label>
       </div>
-      <br>
+      <div class="filter dates">
+        <span>
+          From
+          <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
+        </span>
+        <span>
+          To
+          <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
+        </span>
+      </div>
     </div>
 
-    <div class="dates">
-      <date-picker :date="startTime" :option="option" @change="dateChange()"></date-picker>
-      <date-picker :date="endTime" :option="option" @change="dateChange()"></date-picker>
+    <div class="list">
+      <v-commit :branch="'master'" :commits="filteredCommits['master']"></v-commit>
+      <v-commit v-for="(datas, branch) in filteredCommits" v-if="branch !== 'master'" :branch="branch" :commits="datas"></v-commit>
+      <div class="refresh" @click="getCommits()">
+        <i class="fa fa-refresh" aria-hidden="true"></i>
+      </div>
     </div>
-    
-    <v-commit :branch="'master'" :commits="filteredCommits['master']"></v-commit>
 
-    <v-commit v-for="(datas, branch) in filteredCommits" v-if="branch !== 'master'" :branch="branch" :commits="datas"></v-commit>
-
-    <div class="black_back" :class="{ 'active': settings }"></div>
+    <div class="black_back" title="close" :class="{ 'active': settings }" @click="closeMail()"></div>
     <div class="bloc_settings" :class="{ 'active': settings }">
+      <i class="close fa fa-times-circle" aria-hidden="true" @click="closeMail()"></i>
       <h2>mail settings</h2>
       <input type="text" placeholder="To" v-model="mail.to" name="to" value="">
       <input type="text" placeholder="CC" v-model="mail.cc" name="cc" value="">
@@ -51,7 +60,7 @@
 
     <button class="mail" type="button" name="button" @click="sendmail()">
       <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-      MAILER
+      MAIL
     </button>
 
     <v-quota v-if="meta" :meta="meta"></v-quota>
@@ -61,7 +70,7 @@
 
 <script>
 
-import env from '../env'
+import env from 'env'
 import auth from '../auth'
 import Quota from './Quota.vue'
 import Commit from './Commit.vue'
@@ -138,14 +147,14 @@ export default {
   computed: {
     filteredCommits(){
       this.sha = this.commits.filter(commit => commit.branch === 'master').map(data => data.sha)
-      let filtered =  this.commits
-                  .filter(data => this.valid_message(data.commit.message))
-                  .filter(data => data.branch === 'master' || this.is_doublon(data.sha))
-                  .reduce(function(rv, x) {
-                    (rv[x['branch']] = rv[x['branch']] || []).push(x);
-                    return rv;
-                  }, {})
-      
+      let filtered = this.commits
+      .filter(data => this.valid_message(data.commit.message))
+      .filter(data => data.branch === 'master' || this.is_doublon(data.sha))
+      .reduce(function(rv, x) {
+        (rv[x['branch']] = rv[x['branch']] || []).push(x);
+        return rv;
+      }, {})
+
       return filtered;
     }
   },
@@ -176,9 +185,11 @@ export default {
     dateChange(){
       this.getCommits()
     },
+    closeMail(){
+      this.settings = false
+    },
     editMail(){
       this.settings = false
-      console.log(this.mail)
       if(this.mail){
         localStorage.setItem('mail',JSON.stringify(this.mail))
       }
@@ -187,7 +198,7 @@ export default {
       if(!this.filtre){
         return true
       }
-      if ( message.match( /(FEATURE - |FIX - |TEST - |REFACTO - )/ ) ) {
+      if ( message.match( /^(FEATURE - |FIX - |TEST - |REFACTO - )/ ) ) {
         return true
       }
       return false
@@ -213,9 +224,14 @@ export default {
       let cc = this.mail.cc
       let end = this.mail.end
       let list = '\n\r'
-      //this.master.map(data => { if(this.valid_message(data.commit.message)) list += '- '+data.commit.message+'\n' })
-      //this.develop.map(data => { if(this.valid_message(data.commit.message)) list += '- '+data.commit.message+'\n' })
-      //this.octopus.map(data => { if(this.valid_message(data.commit.message)) list += '- '+data.commit.message+'\n' })
+
+      let commits = this.filteredCommits;
+      Object.keys(commits).map(branch => {
+        commits[branch].map(data => {
+          list += '- '+data.commit.message+'\n'
+        })
+      })
+
       let body = this.mail.body.replace('%today%',today)+list+'  \n'+end
       window.location.href = 'mailto:'+this.mail.to+'?subject='+subject+'&cc='+this.mail.cc+'&body='+encodeURIComponent(body)
     }
@@ -233,9 +249,27 @@ export default {
 
 .page{
 
+  padding-bottom: 100px;
+
+  .dates{
+    & > *{
+      margin: 0 10px;
+    }
+    .cov-datepicker{
+      text-align: center;
+    }
+  }
+
   .filters{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    background: white;
+    box-shadow: 0 0 1px rgba(0,0,0,0.25);
+    max-width: 1000px;
+    width: 90%;
+    margin: 30px auto;
+
     .filter{
       margin: 20px;
       display: flex;
@@ -255,6 +289,7 @@ export default {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     display: none;
+    cursor: pointer;
     &.active{
       display: block;
     }
@@ -274,6 +309,17 @@ export default {
     transition: all 0.2s;
     &.active{
       display: block;
+    }
+    .close{
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      font-size: 30px;
+      cursor: pointer;
+      transition: all 0.1s;
+      &:hover{
+        color: #B8193A;
+      }
     }
     h2{
       text-transform: uppercase;
@@ -322,6 +368,42 @@ export default {
       }
     }
 
+  }
+
+  .list{
+    width: 1000px;
+    max-width: 90%;
+    margin: auto;
+    position: relative;
+
+    .refresh{
+      color: white;
+      background: #FF0057;
+      padding: 10px;
+      font-size: 20px;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      cursor: pointer;
+      position: fixed;
+      right: 10px;
+      bottom: 20%;
+      .fa{
+        transition: all 0.2s;
+      }
+      &:hover{
+        .fa{
+          transform: rotate(120deg);
+        }
+      }
+
+      @media screen and (max-width: 800px) {
+        position: relative;
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+      }
+    }
   }
 
 }

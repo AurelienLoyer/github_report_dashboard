@@ -1,5 +1,5 @@
 import router from './Router';
-import env from './env';
+import env from 'env';
 
 const auth = {
 
@@ -10,7 +10,7 @@ const auth = {
     localStorage.removeItem('token')
     localStorage.removeItem('me')
     this.authenticated = false
-    router.go('/')
+    router.push('/')
   },
 
   checkAuth() {
