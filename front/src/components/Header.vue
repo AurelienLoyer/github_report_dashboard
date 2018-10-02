@@ -59,14 +59,10 @@ export default {
 
 <style lang="scss">
 
-.mebar{
-    height: 25px;
-    display: flex;
-    align-items: center;
-    border-radius: 50%;
-    img{
-      height: 25px;
-    }
+.mebar img{
+  height: 25px;
+  border-radius: 50%;
+  vertical-align: text-bottom;
 }
 
 #nav {
