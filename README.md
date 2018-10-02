@@ -19,6 +19,8 @@ module.exports = {
 ```
 ## PREVIEW
 
+![image](https://user-images.githubusercontent.com/3717296/46327127-099cb580-c5ce-11e8-892d-f3fe853247f4.png)
+
 ![image](https://cloud.githubusercontent.com/assets/3717296/24350718/8d925510-12e3-11e7-9930-c39217bf3971.png)
 
 ![image](https://cloud.githubusercontent.com/assets/3717296/24350728/96e1da14-12e3-11e7-8349-57d42b10f0ee.png)
