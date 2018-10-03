@@ -58,11 +58,16 @@ export default {
 </script>
 
 <style lang="scss">
+.mebar a{
+    display: flex;
+    align-items: center;
+}
 
 .mebar img{
   height: 25px;
   border-radius: 50%;
   vertical-align: text-bottom;
+  border: 3px solid;
 }
 
 #nav {
@@ -159,6 +164,7 @@ body {
   }
   #nav {
     position: fixed;
+    display: inline-flex;
   }
 }
 
@@ -175,7 +181,7 @@ body {
     display: none;
   }
   li {
-    display: inline-block;
+    display: inline-flex;
     position: relative;
     margin: 0 0.6em;
   }
