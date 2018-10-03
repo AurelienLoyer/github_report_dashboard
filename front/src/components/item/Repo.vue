@@ -6,7 +6,7 @@
     <div class="footer">
       <p class="stats">
         <span><i class="fa fa-star" aria-hidden="true"></i> {{repo.stargazers_count}}</span>
-        <span><i class="fa fa-eye" aria-hidden="true"></i> {{repo.subscribers_count}}</span>
+        <span><i class="fa fa-eye" aria-hidden="true"></i> {{repo.watchers}}</span>
         <span><i class="fa fa-code-fork" aria-hidden="true"></i> {{repo.forks_count}}</span>
       </p>
       <p class="actions">
