@@ -3,6 +3,11 @@
     <h3 v-if="issue.repository">{{issue.repository.name}}</h3>
     <h4>{{issue.title}}</h4>
     <em v-html="marked(issue.body)"></em>
+    <div>
+      <span v-for="label in issue.labels">
+        {{ label.name }}
+      </span>
+    </div>
     <a class="leftlink" :href="issue.html_url" target="_blank">
       <i class="fa fa-link" aria-hidden="true"></i>
       <span>view</span>
