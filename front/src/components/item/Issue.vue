@@ -3,9 +3,10 @@
     <h3 v-if="issue.repository">{{issue.repository.name}}</h3>
     <h4>{{issue.title}}</h4>
     <em v-html="marked(issue.body)"></em>
-    <div>
-      <span v-for="label in issue.labels">
-        {{ label.name }}
+    <div class="labels">
+      <span class="label-item" v-for="(label,index) in issue.labels" :key="`label-${index}`">
+        {{ label.name }} 
+        <span class="label-color" :style="`background-color:#${label.color}`"></span>
       </span>
     </div>
     <a class="leftlink" :href="issue.html_url" target="_blank">
@@ -59,9 +60,6 @@ blockquote{
     padding: 0;
     margin-bottom: 10px;
   }
-  h4{
-
-  }
 
   img{
     display: block;
@@ -98,6 +96,27 @@ blockquote{
       font-weight: 700;
     }
   }
+
+  .labels {
+
+  }
+  
+  .label-item {
+    color: white;
+    background: #42b983;
+    font-weight: 500;
+    padding: 2px 5px;
+    display: inline-block;
+    margin: 0 10px 5px 0;
+    border-radius: 4px;
+  }
+
+  .label-color {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin: 0 10px;
+  } 
 }
 
 </style>
