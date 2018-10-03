@@ -66,14 +66,13 @@ app.get('/auth/github/callback',function (req, res) {
     if (err) {
       console.log(err);
     }
-    res.redirect('/?token='+access_token);
+    res.redirect(`${req.headers.referer.slice(0, -1)}/?token=${access_token}`);
   });
 });
 
 app.get('/', function(req, res,next) {
   res.sendfile(__dirname +'/front'+ '/index.html');
   app.use(express.static(__dirname + '/front'));
-  //app.use('/front/',express.static(__dirname + './front'))
 });
 
 app.get('/commits',function(req,res,next){
