@@ -11,6 +11,7 @@ Vue.use(Trend)
 
 vue.use(VueAnalytics,{
   id:'UA-126838160-1',
+  router:Router
 })
 
 new Vue({
