@@ -4,9 +4,15 @@ import VueResource from 'vue-resource'
 import Router from './Router'
 import './filters/index'
 import Trend from 'vuetrend'
+import VueAnalytics from 'vue-analytics'
 
 Vue.use(VueResource)
 Vue.use(Trend)
+
+vue.use(VueAnalytics,{
+  id:'UA-126838160-1',
+  router:Router
+})
 
 new Vue({
   el: '#app',

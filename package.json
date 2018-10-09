@@ -15,7 +15,8 @@
     "express": "^4.15.2",
     "github": "^9.2.0",
     "oauth": "^0.9.15",
-    "socket.io": "^1.7.3"
+    "socket.io": "^1.7.3",
+    "vue-analytics": "^5.16.0"
   },
   "engines": {
     "node": "6.9.2"
