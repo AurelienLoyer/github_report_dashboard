@@ -15,7 +15,7 @@ const express = require('express')
 const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
-const GitHubApi = require("github")
+const GitHubApi = require("@octokit/rest")
 const oauth = require("oauth").OAuth2
 const OAuth2 = new oauth(config.GITHUB_CLIENT_ID, config.GITHUB_CLIENT_SECRET, "https://github.com/", "login/oauth/authorize", "login/oauth/access_token")
 const base_uri = config.BASE_URI
@@ -24,16 +24,10 @@ server.listen(port);
 console.log('Server Run / Mode '+env+' / Port '+port);
 
 let github = new GitHubApi({
-  // optional
   debug: false,
-  protocol: 'https',
-  host: 'api.github.com', // should be api.github.com for GitHub
-  pathPrefix: '', // for some GHEs; none for GitHub
   headers: {
     'user-agent': 'cool-github-commit-report' // GitHub is happy with a unique user agent
   },
-  Promise: require('bluebird'),
-  followRedirects: false, // default: true; there's currently an issue with non-get redirects, so allow ability to disable follow-redirects
   timeout: 5000
 });
 
